@@ -27,9 +27,9 @@ echo ":: Disabling SteamOS read-only mode..."
 steamos-readonly disable
 
 echo ":: Installing acpi_call-dkms..."
-pacman -S --needed --noconfirm acpi_call-dkms
 curl -O "$HEADER_URL"
 pacman -U "$HEADER_FULL_NAME"
+pacman -S "$HEADER_PKG_NAME"
 pacman -S acpi_call-dkms
 
 echo ":: SUCCESS! The system will now reboot."
