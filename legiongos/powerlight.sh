@@ -2,6 +2,10 @@
 
 # powerlight.sh
 
+# Prerequisite:
+# Decky Loader: https://github.com/SteamDeckHomebrew/decky-loader
+# LegionGoRemapper: https://github.com/aarron-lee/LegionGoRemapper
+
 # --- CONFIGURATION ---
 # If the script fails in the future, update these variables with the info from:
 # https://steamdeck-packages.steamos.cloud/archlinux-mirror/jupiter-main/os/x86_64/
