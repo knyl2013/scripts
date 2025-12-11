@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# powerlight.sh
-
-# Prerequisite:
+# Prerequisite (Make sure to install these packages first):
 # Decky Loader: https://github.com/SteamDeckHomebrew/decky-loader
 # LegionGoRemapper: https://github.com/aarron-lee/LegionGoRemapper
 
@@ -17,12 +15,6 @@ HEADER_URL="https://steamdeck-packages.steamos.cloud/archlinux-mirror/jupiter-ma
 # --- SETUP ---
 set -e # Exit immediately if a command fails
 
-if [ "$EUID" -ne 0 ]; then
-  echo "Please run as root."
-  echo "Usage: sudo ./powerlight.sh"
-  exit 1
-fi
-
 cleanup() {
     echo ":: Cleaning up..."
     rm -f "$HEADER_FULL_NAME"
@@ -34,35 +26,11 @@ trap cleanup EXIT
 echo ":: Disabling SteamOS read-only mode..."
 steamos-readonly disable
 
-echo ":: Initializing Pacman keys (fixes common download errors)..."
-pacman-key --init
-pacman-key --populate archlinux jupiter holo
-pacman -Sy
-
-echo ":: Installing build dependencies..."
-pacman -S --needed --noconfirm base-devel
-
-echo ":: Handling Kernel Headers..."
-if pacman -S --noconfirm "$HEADER_PKG_NAME"; then
-    echo ":: Headers installed successfully via Pacman repositories."
-else
-    echo ":: Header package not found in current repo sync. Attempting manual download..."
-    echo ":: Downloading: $HEADER_FULL_NAME"
-    
-    if curl -O "$HEADER_URL"; then
-        echo ":: Installing manually downloaded headers..."
-        pacman -U --noconfirm "$HEADER_FULL_NAME"
-    else
-        echo "Error: Could not download headers. Please check the version URL manually."
-        exit 1
-    fi
-fi
-
 echo ":: Installing acpi_call-dkms..."
 pacman -S --needed --noconfirm acpi_call-dkms
-
-echo ":: Loading module..."
-modprobe acpi_call || echo ":: Module loaded or will load on reboot."
+curl -O "$HEADER_URL"
+pacman -U "$HEADER_FULL_NAME"
+pacman -S acpi_call-dkms
 
 echo ":: SUCCESS! The system will now reboot."
 echo ":: Press Ctrl+C within 5 seconds to cancel reboot."
